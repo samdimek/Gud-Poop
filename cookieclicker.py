@@ -7,6 +7,7 @@ import time
 
 service = Service( executable_path="chromedriver.exe")
 driver = webdriver.Chrome(service=service)
+driver.maximize_window() # Used to maximize the browser window.
 
 driver.get("https://orteil.dashnet.org/cookieclicker/")
 
