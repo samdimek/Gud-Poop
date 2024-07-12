@@ -10,7 +10,7 @@ import time
 # https://sites.google.com/chromium.org/driver/
 
 # Setting up Chrome's driver service && Using that to initialize the webdriver
-# A webdriver is an automation tool that controls Google chrome or Brave.
+# A webdriver is an automation tool that controls Google chrome or Brave. 
 service = Service(executable_path="chromedriver.exe")
 driver = webdriver.Chrome(service=service)
 
@@ -34,5 +34,6 @@ link = driver.find_element(By.PARTIAL_LINK_TEXT, "Studybay.com")
 link.click()
 
 time.sleep(10)
+
 
 driver.quit
