@@ -14,24 +14,54 @@ import time
 service = Service(executable_path="chromedriver.exe")
 driver = webdriver.Chrome(service=service)
 
-driver.get("https://google.com")
+driver.get("https://studybay.com")
+driver.maximize_window()
 
 WebDriverWait(driver, 7).until(
-    EC.presence_of_element_located((By.CLASS_NAME, "gLFyf"))
+    EC.presence_of_element_located((By.ID, "login-link"))
 )
 
 # Brightdata is a company that solves the captcha issues
 
-input_element = driver.find_element(By.CLASS_NAME, "gLFyf")  # Finds the element on the website by its classname. 
-input_element.clear() # Clears the input spaces to make room for more inputs.
-input_element.send_keys("Studybay.com" + Keys.ENTER) # Sends inputs to the browser and presses Enter to search
+input_element = driver.find_element(By.ID, "login-link")
+input_element.click() # Clicked to log in.
+driver.maximize_window() 
+
+WebDriverWait(driver, 7).until(
+    # EC.presence_of_element() # Ensure navigation to login page. 
+)
+
+
+# LOGIN-PAGE
+
+email = "billyodhiambo888@gmail.com"
+password = "123456789"
+
+
+# Fetching data from Studybay Login-Page
+
+email_field = driver.find_element(By.XPATH, "//input[@placeholder='Email']" )
+password_field = driver.find_element(By.XPATH, "//input[@placeholder='Password']" )
+login_Btn = driver.find_element(By.XPATH, "//button[@type='submit']")
+
+
+# Adding values && Logging in.
+
+email_field.clear()
+email_field.send_keys(email)
+password_field.clear()
+password_field.send_keys(password)
+login_Btn.click()
+
+# input_element.clear() # Clears the input spaces to make room for more inputs.
+# input_element.send_keys("Studybay.com" + Keys.ENTER) # Sends inputs to the browser and presses Enter to search
 
 WebDriverWait(driver, 7).until(
     EC.presence_of_element_located((By.PARTIAL_LINK_TEXT, "Studybay.com"))
 )
 
-link = driver.find_element(By.PARTIAL_LINK_TEXT, "Studybay.com")
-link.click()
+# link = driver.find_element(By.PARTIAL_LINK_TEXT, "Studybay.com")
+# link.click()
 
 time.sleep(10)
 

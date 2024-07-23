@@ -1,13 +1,13 @@
 # Imports
 
 from selenium import webdriver
+import undetected_chromedriver as uc
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC 
 import time
-from time import sleep
 from DrissionPage import ChromiumPage
 
 
@@ -16,13 +16,14 @@ from DrissionPage import ChromiumPage
 # Setting up Chrome's driver's service & using it to initialize the web driver.
 
 service = Service(executable_path="chromedriver.exe")  
-driver = webdriver.Chrome(service=service)
+driver = webdriver.Chrome(service=service) # Changing the driver with undetectable driver.
 
 
 # Initialize variables
 
-email = "billyodhiambo888@gmail.com"
-password = "123456789"
+email = "email"
+mail = "billyodhiambo888@gmail.com"
+keyword = "123456789"
 login_URL = "https://studybay.com/login/" # https://studybay.com/login/
 
 '''
@@ -33,10 +34,15 @@ login_URL = "https://studybay.com/login/" # https://studybay.com/login/
     sleep(3)
 '''
 
+# Getting da browser's page && maximizing it.
 
-driver.get(login_URL)  # Get the browser's page.
+driver.get(login_URL)
+driver.maximize_window()
 
-driver.maximize_window() # Maximizing the web page.
+# Ensure navigation to login-page.
+WebDriverWait(driver, 10).until(
+    EC.presence_of_element_located(By.NAME, email)
+)
 
 
 # Studybay Login-Page Elements
@@ -49,15 +55,15 @@ driver.maximize_window() # Maximizing the web page.
 
 # Fetching data from Studybay Login-Page
 
-email_field = driver.find_element(By.XPATH, "//input[@placeholder='Email']" )
-password_field = driver.find_element(By.XPATH, "//input[@placeholder='Password']" )
+mail_field = driver.find_element(By.XPATH, "//input[@placeholder='Email']" )
+keyword_field = driver.find_element(By.XPATH, "//input[@placeholder='Password']" )
 login_Btn = driver.find_element(By.XPATH, "//button[@type='submit']")
 
 
 # Adding values && Logging in.
 
-email_field.send_keys(email)
-password_field.send_keys(password)
+mail_field.send_keys(mail)
+keyword_field.send_keys(keyword)
 login_Btn.click()
 
 
