@@ -1,17 +1,18 @@
- # Imports
+# Imports
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC 
-from selenium.common.exceptions import NoSuchElementException, TimeoutException
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.common.exceptions import NoSuchElementException, TimeoutException, ElementNotInteractableException
 import time
 
 # Project Plan
 """
-    1. Imports: Libraries:
+    1. Imports: Libraries
+        
     2. Project Plan
     3. Studybay Elements
     4. Variables: (Name all variables >> decide which ones are global and which ones local.)
@@ -21,7 +22,18 @@ import time
         d. 
     5. A function to initialize the WebDriver.
     6. A function to automate the login process.
+        a. Use `driver.get(URL)` to navigate to the webpage. Maximize the page.
+        b. use `WebDriverWait(driver, 10).until(
+            EC.presence_of_element_located((By.ID, "login-link"))
+            )   * Remember this is found on /studybay.com/login/
+        c. Locate input fields and then populate them with user's values. ie. mail_field=driver.find_element(By.CSS_SELECTOR, ' ') && mail_field.send_keys(mail)
+        d. Click the Login button, wait until EC [An html element to confirm one has logged in]
     7. A function to navigate to the Auction/Project page and place bids.
+        a. Navigate to the Projects page
+        b. Locate a new project with less than 3 bids at that time, not have a bid on before, then navigate to that project and bid on it.
+        c. Find the minimum, average and maximum bid amounts on a particular project and place your bids according to the user's settings.
+        d. Navigate back to the project's page to check on another new project.
+        e. REPEAT
     8. Database management: 
         a. Setup a database
         b. Add multiple accounts
@@ -40,18 +52,18 @@ import time
             " element = driver.find_element(By.CSS_SELECTOR, '.class_name') "
             
         CSS_SELECTORS
-            1. login Button: input__Root-sc-hqbtr5-0 gxUZIo Heading: heading__Heading-sc-1xvnhi1-0 dyrkwh
-            2.
+            1. Heading: heading__Heading-sc-1xvnhi1-0 dyrkwh
+            2. Bid Button: 
         
-            # Locate the input fields using the data-hidden ID
-            username_field = driver.find_element(By.CSS_SELECTOR, '[data-hidden="username"]')
-            password_field = driver.find_element(By.CSS_SELECTOR, '[data-hidden="password"]')
+        # Locate the input fields using the CSS-SELECTOR
+            username_field = driver.find_element(By.CSS_SELECTOR, '.CLASS_NAME')
+            password_field = driver.find_element(By.CSS_SELECTOR, '.CLASS_NAME')
 
-            # Populate the fields with your credentials
+        # Populate the fields with your credentials
             username_field.send_keys('your_username')
             password_field.send_keys('your_password')
 
-            # Submit the form
+        # Submit the form
             password_field.send_keys(Keys.RETURN)
         * data-hidden id="login-link" : Always remember the syntax. '[data-hidden id="login-link"]'
         * 
@@ -60,57 +72,75 @@ import time
 
 """
 
+# GLOBAL_VARIABLES
+
 # User Credentials
 mail = "billyodhiambo888@gmail.com"
 keyword = "123456789"
+bid_amount = ""
 
-# A function to Initialize webdriver with WebDriver Manager
+
+# Initializing_webDriver
 def driver_init():
     
-    # Setting custom User-Agent
+    # custom_User-Agent
     custom_user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36"
+    
+    # Options
     options = webdriver.ChromeOptions()
     options.add_argument(f"user-agent={custom_user_agent}")
-    # options.add_argument("--disable-blink-features=Automation Controlled") # Evades detection
-    '''
-        An Example
-        def outer_function(func):
-            func()
+    #/
+    options.add_argument("--disable-blink-features=Automation Controlled") # Evades detection
 
-            def inner_function():
-            print("Hello from inner_function")
-            
-            outer_function(inner_function)
-            
-        Solving issue01: Reducing the arguments 'options' in
-        WebDriver.__init__()
-    '''
-        
-    # Setting up Chrome's driver's service & using it to initialize the web driver.
-    service = Service(executable_path=ChromeDriverManager().install())  
-    driver = webdriver.Chrome(service=service, options=options) # Automatically managing chrome Driver version with webdriver_manager
-    return driver
+    # Chrome_driver's_service && initializing the webDriver.
+    service = Service(executable_path=ChromeDriverManager().install())
+    
+    # Automatically managing chrome Driver version with webdriver_manager
+    driver = webdriver.Chrome(service=service, options=options) 
+    return driver # chkd.
 
-# Login function
+
+# Login_function
 def account_login(driver):
-    driver.get("https://www.studybay.com/login/")
+    # STUDYBAY LOGIN_URL
+    login_url = "https://www.studybay.com/login/"
+    wait = WebDriverWait(driver, 200)
+    
+    driver.get(login_url)
+    time.sleep(4)
     driver.maximize_window()
+    # Write code to check that the website is maximized here.
     
-    # Finding Email and Password fields
-    mail_field = driver.find_element(By.CSS_SELECTOR, '.input__Root-sc-hqbtr5-0 gxUZIo' )
-    keyword_field = driver.find_element(By.CSS_SELECTOR, "//input[@placeholder='Password']" )
+    # Solving the Captcha
+    # checkbox = wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, "input[type='checkbox']")))
     
+    # Click the checkbox
+    # checkbox.click()
+    # driver.execute_script("document.getElementsByClassName('cb-i')[0].click();") and wait.until(EC.visibility_of_element_located((By.CSS_SELECTOR, ".input[name='email']")))
+    
+    # Finding Email and Password fields: Using CSS_SELECTOR. Try using web waits with EC.
+    mail_field = wait.until(EC.visibility_of_element_located((By.CSS_SELECTOR, ".input[name='email']")))
+    keyword_field = driver.find_element(By.CSS_SELECTOR, ".input[name='password']")
+    
+    # Sending user_details
     mail_field.send_keys(mail)
+    time.sleep(3)
     keyword_field.send_keys(keyword)
+    time.sleep(4)
     
-    keyword_field.send_keys(Keys.RETURN)
+    # Submitting the Login form
+    keyword_field.send_keys(Keys.ENTER)
     
-    # Wait for login to complete && Adjust the selector to match the one on Studybay
-    WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.ID, "")))
+    # Wait for login to complete && Adjust the selector to match the one on Studybay's Home page.
+    wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, ".userInfo__main-avatar"))) 
+    
 
 def place_bid(driver, bid_choice="manual", bid_amount="minimum"):
+    #STUDYBAY AUCTION_URL
+    auction_url = "https://studybay.com/order/search"
+    
     try:
-        driver.get("https://www.studybay.com/auction/")
+        driver.get(auction_url)
         
         #Locate the first 3 projects and bid on them.
         for i in range(3):
@@ -140,10 +170,10 @@ def place_bid(driver, bid_choice="manual", bid_amount="minimum"):
                     bid_amount = average_bid
                 elif bid_choice == "max":
                     bid_amount = max_bid
-                elif bid_choice == "manual" and custom_bid_amount:
-                    bid_amount = custom_bid_amount
+                # elif bid_choice == "manual" and custom_bid_amount:
+                #     bid_amount = custom_bid_amount
                 else:
-                    print("Invalid bid choice or missing custom bid amount.")
+                    print("Invalid bid choice or missing bid amount.")
                     return
                 
                 bid_input.clear()
@@ -171,42 +201,3 @@ def run_bot():
     
 if __name__ == "__main__":
     run_bot()
-
-
-
-
-# email = "email"
-# login_URL = "https://studybay.com/login/" # https://studybay.com/login/
-
-# '''
-#     p = ChromiumPage()
-#     p.get("https://nowsecure.nl/")
-#     i = p.get_frame("@src^https://challenges.cloudflare.com/cdn-cqi")
-#     e = i(".mark")
-#     sleep(3)
-# '''
-
-# # Getting da browser's page && maximizing it.
-
-# driver.get(login_URL)
-# driver.maximize_window()
-
-# # Ensure navigation to login-page.
-# WebDriverWait(driver, 10).until(
-#     EC.presence_of_element_located(By.NAME, email)
-# )
-
-
-
-
-# # Fetching data from Studybay Login-Page
-
-
-# login_Btn = driver.find_element(By.XPATH, "//button[@type='submit']")
-
-
-# # Adding values && Logging in.
-
-# mail_field.send_keys(mail)
-# keyword_field.send_keys(keyword)
-# login_Btn.click()
