@@ -7,7 +7,7 @@ record_count = 0
 
 
  
-with open("C:/Users/Administrator/PycharmProjects/Natsu-1/OntaQo/FileAccess/data.txt", "r+") as file:
+with open("C:/Users/Administrator/PycharmProjects/Natsu-1/OntaQo/FileAccess/IT244_U5_Data.txt", "r+") as file:
     for line in file:
         records_list.append(line.strip())
         
@@ -16,7 +16,7 @@ new_record = "5,Brady,Bobby,4222 Clinton Way,Los Angeles,CA"
 records_list.append(new_record)
 
 # Open a new csv file
-with open("databaseSheet.csv", "w", newline='') as csvfile:
+with open("IT244_U5_PromoCredit.csv", "w", newline='') as csvfile:
     writer=csv.writer(csvfile)
     
     #Writing-the-heading
