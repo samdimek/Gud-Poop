@@ -192,6 +192,7 @@ def place_bid(driver, bid_choice="manual", bid_amount="minimum"):
     except TimeoutException as e:
         print(f"Operation timed out: {e}")
 
+
 # MAIN FUNCTION TO RUN BOT
 def run_bot():
     driver = driver_init()
