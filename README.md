@@ -30,6 +30,23 @@ Python libraries:
 
 ### Installing Selenium
 
+### Beautiful Soup
+
+`apt-get install python3-bs4` : Install Beautiful Soup
+One can install using pip or easy_install, package name is `beautifulsoup4` 
+    `pip3 install beautifulsoup4`
+    `easy_install beautifulsoup4`
+
+Installing a parser:
+    Beautiful Soup supports a number of parsers, including the HTML parser in Python's standard library. Different parsers have their pros and cons.
+
+    1. Python's html.parser : Batteries included. Decent speed > Not that fast. Less lenient
+    2. lxml's HTML parser : Very fast > External C dependency
+    3. lxml's XML parser: Very fast. Only supported XML parser atm. > External C dependency.
+
+    `pip install lxml` 
+
+
 
 ### Studybay Page
 
