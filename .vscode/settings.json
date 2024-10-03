@@ -3,6 +3,5 @@
         "beautifulsoup",
         "lxml",
         "Seleninum",
-        "Studybay"
     ]
 }
